@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production builds
+build/
+dist/
+
+# Data files (NEVER commit actual participant data)
+*.csv
+!*SAMPLE.csv
+*.edf
+/data/*
+!data/.gitkeep
+!data/*template*.csv
+
+# Personal info
+*.pdf
+!*template*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+
+# Testing
+coverage/
+
+# Misc
+.cache/
+temp/
+tmp/
