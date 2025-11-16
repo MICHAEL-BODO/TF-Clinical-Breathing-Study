@@ -1,6 +1,7 @@
 {
   "name": "tf-clinical-breathing-app",
   "version": "0.5.0",
+  "homepage": "https://michael-bodo.github.io/TF-Clinical-Breathing-Study/app",
   "description": "Participant breathing guide for TF University clinical trial",
   "private": true,
   "dependencies": {

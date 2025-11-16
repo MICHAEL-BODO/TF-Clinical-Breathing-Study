@@ -1,0 +1,133 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: |
+            TF-Clinical-App/package-lock.json
+            TF-Clinical-Coordinator/package-lock.json
+
+      - name: Install and Build Participant App
+        run: |
+          cd TF-Clinical-App
+          npm ci
+          npm run build
+          cd ..
+
+      - name: Install and Build Coordinator
+        run: |
+          cd TF-Clinical-Coordinator
+          npm ci
+          npm run build
+          cd ..
+
+      - name: Create deployment directory
+        run: |
+          mkdir -p deploy
+          mkdir -p deploy/app
+          mkdir -p deploy/coordinator
+          cp -r TF-Clinical-App/build/* deploy/app/
+          cp -r TF-Clinical-Coordinator/build/* deploy/coordinator/
+
+      - name: Create index page
+        run: |
+          cat > deploy/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>TF Clinical Breathing Study</title>
+            <style>
+              body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background: linear-gradient(to bottom right, #f0f9ff, #e0e7ff);
+              }
+              .card {
+                background: white;
+                padding: 30px;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                margin: 20px 0;
+              }
+              h1 { color: #1e40af; }
+              a {
+                display: inline-block;
+                padding: 12px 24px;
+                margin: 10px;
+                background: #2563eb;
+                color: white;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: bold;
+              }
+              a:hover { background: #1d4ed8; }
+              .version { color: #6b7280; font-size: 14px; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>🫁 TF Clinical Breathing Study</h1>
+              <p class="version">Version 0.5.0 | TF University, Budapest</p>
+              <p>50-participant clinical trial comparing breathing techniques for anxiety reduction.</p>
+              
+              <h2>Applications</h2>
+              <div>
+                <a href="./app/">📱 Participant App</a>
+                <p>For study participants: Guided breathing exercises with anxiety assessment</p>
+              </div>
+              
+              <div>
+                <a href="./coordinator/">📊 Coordinator Dashboard</a>
+                <p>For researchers: Real-time monitoring, data collection, and export</p>
+              </div>
+
+              <h2>Study Information</h2>
+              <ul>
+                <li><strong>Principal Investigator:</strong> Dr. Szabó Sándor András</li>
+                <li><strong>Location:</strong> TF University, Budapest, Hungary</li>
+                <li><strong>Date:</strong> December 2025</li>
+                <li><strong>Participants:</strong> 50 graduate students (10 per group)</li>
+              </ul>
+
+              <p><a href="https://github.com/MICHAEL-BODO/TF-Clinical-Breathing-Study" style="background:#374151;">GitHub Repository</a></p>
+            </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './deploy'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
