@@ -31,14 +31,14 @@ jobs:
       - name: Install and Build Participant App
         run: |
           cd TF-Clinical-App
-          npm ci
+          npm install
           npm run build
           cd ..
 
       - name: Install and Build Coordinator
         run: |
           cd TF-Clinical-Coordinator
-          npm ci
+          npm install
           npm run build
           cd ..
 
