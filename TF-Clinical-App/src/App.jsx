@@ -189,7 +189,7 @@ const TFClinicalBreathingApp = () => {
 
       return () => clearInterval(interval);
     }
-192|   }, [isActive, breathPhase, group, techniques]);
+ }, [isActive, breathPhase, group, techniques]);
 
   const handleCheckin = () => {
     if (!participantId || !group) {
