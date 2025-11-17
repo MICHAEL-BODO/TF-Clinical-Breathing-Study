@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Circle, Square, Wind, Waves, Timer } from 'lucide-react';
 
 const TFClinicalBreathingApp = () => {
@@ -15,7 +15,7 @@ const TFClinicalBreathingApp = () => {
   const [language, setLanguage] = useState('en');
   const [sessionStartTime, setSessionStartTime] = useState(null);
 
-  const techniques = {
+  const techniques = useMemo(() => ({
     1: {
       name: { en: 'Box Breathing', hu: 'Négyzet Légzés' },
       nameShort: 'Box Breathing (4-4-4-4)',
@@ -86,7 +86,7 @@ const TFClinicalBreathingApp = () => {
       },
       icon: Timer
     }
-  };
+  }), []);
 
   const translations = {
     en: {
@@ -189,7 +189,7 @@ const TFClinicalBreathingApp = () => {
 
       return () => clearInterval(interval);
     }
-  }, [isActive, breathPhase, group]);
+ }, [isActive, breathPhase, group, techniques]);
 
   const handleCheckin = () => {
     if (!participantId || !group) {

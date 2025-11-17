@@ -14,6 +14,9 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: Checkout
@@ -31,14 +34,14 @@ jobs:
       - name: Install and Build Participant App
         run: |
           cd TF-Clinical-App
-          npm ci
+          npm install
           npm run build
           cd ..
 
       - name: Install and Build Coordinator
         run: |
           cd TF-Clinical-Coordinator
-          npm ci
+          npm install
           npm run build
           cd ..
 
